@@ -78,10 +78,12 @@
         <script>
         /* global $ */
         // put your JavaScript code here...
+        
         $(document).ready(function() 
         {
             
             let model = {}
+            game2 = true;
 
             function initializeModel()
             {
@@ -89,6 +91,7 @@
                 model.btnClass = 'btn';
                 model.clickCount = 0;
                 model.size = 6; // variable to change number of buttons 
+                model.game = true;
                 model.num = Math.floor(Math.random() * model.size);
 
                 
@@ -108,16 +111,17 @@
                 {
                     let item = $("<button></button>");
                     item.attr("index", i);
-                    if(model.button[i].treasure == false && model.button[i].flipped == true)
+                    if(model.button[i].treasure == false && model.button[i].flipped == true && model.game == true)
                     {
                          item.addClass('btnBad');
                         $("#counter").html("Guesses: " + model.clickCount);
                     }
-                    else if(model.button[i].treasure == true && model.button[i].flipped == true)
+                    else if(model.button[i].treasure == true && model.button[i].flipped == true && model.game == true)
                     {
                         item.addClass('btnGood');
                         $("#counter").html("Guesses: " + model.clickCount);
                         $('#confirm').modal('show');
+                        model.game = false;
                     }                    
                     
                     item.addClass('btn');
@@ -131,7 +135,7 @@
             $(document).on("click",".btn",function() 
             {
                 let index = $(this).attr("index");
-                if ( model.button[index].flipped == false)
+                if ( model.button[index].flipped == false && model.game == true)
                 {
                     model.button[index].flipped = true;
                     model.clickCount++;
@@ -140,19 +144,26 @@
                 //updateView(); 
             });
 
+
             $('#yes').click(function()
             {
                 $('#confirm').modal('hide');
                 initializeModel();
                 updateView();                
             });
+            
             $('#no').click(function()
             {
-                $('#confirm').modal('hide');
-                $('#row').fadeOut(3000);
+             $('#confirm').modal('hide');
+             game2 = false;
+             
             });
-             initializeModel();
-            updateView(); 
+            
+            if(model.game == true || game2 == true)
+            {
+                initializeModel();
+                updateView();
+            }
         });    
         </script>
     </body>
